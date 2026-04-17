@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataSnap AI — Documentos a Excel con IA</title>
+  <meta name="description"
+    content="Extrae datos de imágenes y PDFs y expórtalos a Excel con Inteligencia Artificial. Powered by Gemini." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <!-- SheetJS for Excel export -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">⚡</span>
+        <span class="logo-text">DataSnap <span class="logo-ai">AI</span></span>
+      </div>
+      <p class="header-tagline">Documentos → Excel en segundos</p>
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- ── API KEY CONFIG ── -->
+    <section class="card config-card" id="config-section">
+      <div class="card-header">
+        <span class="card-icon">🔑</span>
+        <h2 class="card-title">Configuración</h2>
+        <span class="badge badge-free">Plan Gratuito</span>
+      </div>
+      <div class="config-body">
+        <label for="api-key-input" class="input-label">
+          Gemini API Key
+          <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" class="link-hint">¿Cómo
+            obtenerla?</a>
+        </label>
+        <div class="input-row">
+          <input id="api-key-input" type="password" class="text-input" placeholder="AIza..." autocomplete="off" />
+          <button id="toggle-key-btn" class="btn btn-ghost" title="Mostrar/Ocultar clave">👁</button>
+          <button id="save-key-btn" class="btn btn-primary">Guardar</button>
+        </div>
+        <div class="input-row" style="margin-top: 12px;">
+          <select id="model-select" class="text-input" style="cursor: pointer;">
+            <option value="gemini-flash-latest">Gemini Flash (Por Defecto)</option>
+            <option value="gemini-pro-latest">Gemini Pro</option>
+          </select>
+        </div>
+        <p class="config-hint">Tu clave se guarda solo en este navegador (localStorage). Nunca sale de tu dispositivo.
+        </p>
+      </div>
+    </section>
+
+    <!-- ── UPLOAD ZONE ── -->
+    <section class="card upload-card" id="upload-section">
+      <div class="card-header">
+        <span class="card-icon">📁</span>
+        <h2 class="card-title">Subir Documento</h2>
+      </div>
+
+      <div class="drop-zone" id="drop-zone">
+        <div class="drop-zone-inner">
+          <div class="drop-icon" id="drop-icon">📄</div>
+          <p class="drop-text">Arrastra tu archivo aquí</p>
+          <p class="drop-subtext">Imágenes (JPG, PNG, WEBP) · PDF</p>
+          <label for="file-input" class="btn btn-secondary mt-12">Seleccionar archivo</label>
+          <input id="file-input" type="file" accept="image/*,.pdf" hidden />
+        </div>
+      </div>
+
+      <!-- File preview -->
+      <div class="file-preview hidden" id="file-preview">
+        <div class="preview-info">
+          <span class="preview-icon" id="preview-icon">📄</span>
+          <div class="preview-meta">
+            <p class="preview-name" id="preview-name">archivo.pdf</p>
+            <p class="preview-size" id="preview-size">0 KB</p>
+          </div>
+          <button id="clear-file-btn" class="btn btn-ghost btn-sm" title="Quitar archivo">✕</button>
+        </div>
+        <img id="preview-img" class="preview-img hidden" alt="Vista previa del documento" />
+      </div>
+
+      <div class="upload-actions" id="upload-actions">
+        <button id="extract-btn" class="btn btn-accent btn-lg" disabled>
+          <span class="btn-icon">✨</span>
+          <span id="extract-btn-text">Extraer Datos</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- ── STATUS BANNER ── -->
+    <div class="status-banner hidden" id="status-banner" role="alert">
+      <span class="status-icon" id="status-icon"></span>
+      <span class="status-msg" id="status-msg"></span>
+      <button class="status-close" id="status-close" title="Cerrar">✕</button>
+    </div>
+
+    <!-- ── LOADING ── -->
+    <div class="loading-overlay hidden" id="loading-overlay">
+      <div class="spinner"></div>
+      <p class="loading-text">Analizando documento con IA…</p>
+    </div>
+
+    <!-- ── RESULTS ── -->
+    <section class="card results-card hidden" id="results-section">
+      <div class="card-header">
+        <span class="card-icon">📊</span>
+        <h2 class="card-title">Datos Extraídos</h2>
+        <div class="results-actions">
+          <button id="copy-btn" class="btn btn-ghost btn-sm">📋 Copiar</button>
+          <button id="download-btn" class="btn btn-accent btn-sm">⬇ Descargar Excel</button>
+        </div>
+      </div>
+
+      <!-- Table preview -->
+      <div class="table-wrapper" id="table-wrapper">
+        <!-- dynamically populated -->
+      </div>
+
+      <!-- Raw text (collapsible) -->
+      <details class="raw-details">
+        <summary class="raw-summary">Ver texto sin procesar</summary>
+        <pre class="raw-output" id="raw-output"></pre>
+      </details>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>Powered by <strong>Gemini Flash</strong> · DataSnap AI 2026</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
