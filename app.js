@@ -68,7 +68,10 @@ saveKeyBtn.addEventListener('click', () => {
 // ── File selection ─────────────────────────────
 fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
 
-dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('click', (e) => {
+  if (e.target.tagName.toLowerCase() === 'label' || e.target.tagName.toLowerCase() === 'input') return;
+  fileInput.click();
+});
 dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
 dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
 dropZone.addEventListener('drop', e => {
