@@ -1,6 +1,6 @@
 /* ─────────────────────────────────────────────
    DataSnap AI  –  app.js
-   Uses Gemini 2.5 Flash (gemini-2.5-flash)
+   Uses Gemini 3.5 Flash (gemini-3.5-flash)
    via the Gemini REST API (no SDK needed).
 ───────────────────────────────────────────── */
 
@@ -41,7 +41,7 @@ let lastRows = [];
 
 // ── API Key persistence ────────────────────────
 const LS_KEY = 'datasnap_gemini_key';
-const LS_MOD_KEY = 'datasnap_gemini_model';
+const LS_MOD_KEY = 'datasnap_gemini_model_v2';
 const modelSelect = document.getElementById('model-select');
 
 (function initConfig() {
@@ -49,7 +49,9 @@ const modelSelect = document.getElementById('model-select');
   if (savedKey) apiKeyInput.value = savedKey;
   
   const savedModel = localStorage.getItem(LS_MOD_KEY);
-  if (savedModel && modelSelect) modelSelect.value = savedModel;
+  if (modelSelect) {
+    modelSelect.value = savedModel || 'gemini-flash-lite-latest';
+  }
 })();
 
 toggleKeyBtn.addEventListener('click', () => {
@@ -208,7 +210,7 @@ async function callGemini(apiKey, base64Data, mimeType) {
     ];
   }
 
-  const selectedModel = document.getElementById('model-select').value || 'gemini-flash-latest';
+  const selectedModel = document.getElementById('model-select').value || 'gemini-flash-lite-latest';
   const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`;
 
   const body = {
